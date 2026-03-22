@@ -1,4 +1,4 @@
-# 🤖 AI Test Case Generation Platform
+# AI Test Case Generation Platform
 
 An intelligent platform that automatically generates comprehensive test cases from Jira stories using AI, with advanced duplicate detection and real-time Jira integration.
 
