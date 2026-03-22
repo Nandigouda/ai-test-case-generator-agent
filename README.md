@@ -12,8 +12,12 @@
 - 🔗 Real-time Jira integration via webhooks  
 - 📊 Monitoring dashboard with live analytics  
 - ⚡ Microservices-based scalable architecture  
-## 🎯 Overview
 
+## 🎯 Why This Project?
+Manual test case creation is time-consuming and error-prone.  
+This platform automates the process using AI, improving efficiency, reducing duplication, and enabling faster QA cycles.
+
+## 🎯 Overview
 This platform revolutionizes test case creation by:
 - **Automatically generating test cases** from user stories using Azure OpenAI GPT-4 Turbo
 - **Detecting duplicates** with 5-step validation and vector similarity matching
@@ -115,7 +119,7 @@ This platform revolutionizes test case creation by:
 1. **Clone and Install**
    ```bash
    git clone <repository-url>
-   cd hackathon-selfproject
+   cd ai-test-case-generator-agent
    npm install
    ```
 
@@ -333,6 +337,13 @@ hackathon-selfproject/
 - Follow modular architecture patterns
 - Include comprehensive error handling
 - Add logging for debugging
+
+## 🚀 Future Enhancements
+
+- Integrate Playwright/Selenium for auto test execution  
+- Add CI/CD pipeline integration (Jenkins/GitHub Actions)  
+- Improve AI accuracy with fine-tuned models  
+- Add multi-project support with role-based access  
 
 ## 📝 License
 
