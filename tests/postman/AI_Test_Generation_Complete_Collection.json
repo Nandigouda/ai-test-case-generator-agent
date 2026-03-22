@@ -1,0 +1,372 @@
+{
+  "info": {
+    "name": "AI Test Generation - Complete Collection",
+    "description": "Complete Postman collection for testing AI Test Generation webhook endpoints with Jira integration",
+    "version": "2.0.0",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Webhook Health Checks",
+      "item": [
+        {
+          "name": "Standard Webhook Health",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/webhook/health",
+              "host": ["{{base_url}}"],
+              "path": ["webhook", "health"]
+            },
+            "description": "Health check for the standard webhook endpoint"
+          },
+          "response": []
+        },
+        {
+          "name": "Jira Webhook Health",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/jira-webhook/health",
+              "host": ["{{base_url}}"],
+              "path": ["jira-webhook", "health"]
+            },
+            "description": "Health check for the Jira webhook endpoint with query parameters"
+          },
+          "response": []
+        },
+        {
+          "name": "General Health",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/health",
+              "host": ["{{base_url}}"],
+              "path": ["health"]
+            },
+            "description": "General server health check"
+          },
+          "response": []
+        }
+      ],
+      "description": "Health check endpoints for monitoring webhook server status"
+    },
+    {
+      "name": "Standard Webhook Tests",
+      "item": [
+        {
+          "name": "Jira Issue Created",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"webhookEvent\": \"jira:issue_created\",\n  \"timestamp\": \"{{$timestamp}}\",\n  \"issue\": {\n    \"id\": \"10001\",\n    \"key\": \"PROJ-123\",\n    \"fields\": {\n      \"summary\": \"User login functionality\",\n      \"description\": \"Implement secure user authentication with email and password validation. Should include password strength requirements and account lockout after failed attempts.\",\n      \"issuetype\": {\n        \"name\": \"Story\",\n        \"id\": \"10001\"\n      },\n      \"project\": {\n        \"key\": \"PROJ\",\n        \"name\": \"Test Project\"\n      },\n      \"assignee\": {\n        \"accountId\": \"user123\",\n        \"displayName\": \"John Doe\"\n      },\n      \"status\": {\n        \"name\": \"To Do\",\n        \"id\": \"10000\"\n      }\n    }\n  }\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/webhook",
+              "host": ["{{base_url}}"],
+              "path": ["webhook"]
+            },
+            "description": "Test webhook for Jira issue creation event"
+          },
+          "response": []
+        },
+        {
+          "name": "Jira Issue Updated",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"webhookEvent\": \"jira:issue_updated\",\n  \"timestamp\": \"{{$timestamp}}\",\n  \"issue\": {\n    \"id\": \"10002\",\n    \"key\": \"PROJ-124\",\n    \"fields\": {\n      \"summary\": \"Payment processing integration\",\n      \"description\": \"Integrate with Stripe API for credit card payments. Must handle successful payments, failed payments, and webhook notifications from Stripe.\",\n      \"issuetype\": {\n        \"name\": \"Story\",\n        \"id\": \"10001\"\n      },\n      \"project\": {\n        \"key\": \"PROJ\",\n        \"name\": \"Test Project\"\n      },\n      \"assignee\": {\n        \"accountId\": \"user456\",\n        \"displayName\": \"Jane Smith\"\n      },\n      \"status\": {\n        \"name\": \"In Progress\",\n        \"id\": \"10001\"\n      }\n    }\n  }\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/webhook",
+              "host": ["{{base_url}}"],
+              "path": ["webhook"]
+            },
+            "description": "Test webhook for Jira issue update event"
+          },
+          "response": []
+        }
+      ],
+      "description": "Tests for the standard webhook endpoint (/webhook)"
+    },
+    {
+      "name": "Jira Webhook with Query Parameters",
+      "item": [
+        {
+          "name": "Jira Webhook - Issue Created with Params",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"webhookEvent\": \"jira:issue_created\",\n  \"timestamp\": \"{{$timestamp}}\",\n  \"issue\": {\n    \"id\": \"10003\",\n    \"key\": \"DEC-10080\",\n    \"fields\": {\n      \"summary\": \"Dashboard analytics feature\",\n      \"description\": \"Create interactive dashboard with charts and metrics. Should include filtering, date range selection, and export functionality.\",\n      \"issuetype\": {\n        \"name\": \"Story\",\n        \"id\": \"10001\"\n      },\n      \"project\": {\n        \"key\": \"DEC\",\n        \"name\": \"Decision Engine\"\n      },\n      \"assignee\": {\n        \"accountId\": \"ross.geller\",\n        \"displayName\": \"Ross Geller\"\n      },\n      \"status\": {\n        \"name\": \"To Do\",\n        \"id\": \"10000\"\n      }\n    }\n  }\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/jira-webhook?issueKey=DEC-10080&projectKey=DEC&user=ross.geller",
+              "host": ["{{base_url}}"],
+              "path": ["jira-webhook"],
+              "query": [
+                {
+                  "key": "issueKey",
+                  "value": "DEC-10080"
+                },
+                {
+                  "key": "projectKey",
+                  "value": "DEC"
+                },
+                {
+                  "key": "user",
+                  "value": "ross.geller"
+                }
+              ]
+            },
+            "description": "Test Jira webhook with query parameters for issue creation"
+          },
+          "response": []
+        },
+        {
+          "name": "Jira Webhook - Issue Updated with Params",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"webhookEvent\": \"jira:issue_updated\",\n  \"timestamp\": \"{{$timestamp}}\",\n  \"issue\": {\n    \"id\": \"10004\",\n    \"key\": \"DEC-10081\",\n    \"fields\": {\n      \"summary\": \"Email notification system\",\n      \"description\": \"Implement email notifications for various events. Should support HTML templates, attachments, and delivery tracking.\",\n      \"issuetype\": {\n        \"name\": \"Story\",\n        \"id\": \"10001\"\n      },\n      \"project\": {\n        \"key\": \"DEC\",\n        \"name\": \"Decision Engine\"\n      },\n      \"assignee\": {\n        \"accountId\": \"monica.bing\",\n        \"displayName\": \"Monica Bing\"\n      },\n      \"status\": {\n        \"name\": \"In Progress\",\n        \"id\": \"10001\"\n      }\n    }\n  }\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/jira-webhook?issueKey=DEC-10081&projectKey=DEC&user=monica.bing",
+              "host": ["{{base_url}}"],
+              "path": ["jira-webhook"],
+              "query": [
+                {
+                  "key": "issueKey",
+                  "value": "DEC-10081"
+                },
+                {
+                  "key": "projectKey",
+                  "value": "DEC"
+                },
+                {
+                  "key": "user",
+                  "value": "monica.bing"
+                }
+              ]
+            },
+            "description": "Test Jira webhook with query parameters for issue update"
+          },
+          "response": []
+        },
+        {
+          "name": "Jira Webhook - Missing Parameters",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"webhookEvent\": \"jira:issue_updated\",\n  \"timestamp\": \"{{$timestamp}}\",\n  \"issue\": {\n    \"id\": \"10005\",\n    \"key\": \"DEC-10082\",\n    \"fields\": {\n      \"summary\": \"Test missing parameters\",\n      \"description\": \"This should fail validation due to missing issueKey parameter\",\n      \"issuetype\": {\n        \"name\": \"Story\",\n        \"id\": \"10001\"\n      },\n      \"project\": {\n        \"key\": \"DEC\",\n        \"name\": \"Decision Engine\"\n      }\n    }\n  }\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/jira-webhook?projectKey=DEC&user=test.user",
+              "host": ["{{base_url}}"],
+              "path": ["jira-webhook"],
+              "query": [
+                {
+                  "key": "projectKey",
+                  "value": "DEC"
+                },
+                {
+                  "key": "user",
+                  "value": "test.user"
+                }
+              ]
+            },
+            "description": "Test error handling when required issueKey parameter is missing"
+          },
+          "response": []
+        }
+      ],
+      "description": "Tests for the Jira webhook endpoint with query parameters (/jira-webhook)"
+    },
+    {
+      "name": "Integration Tests",
+      "item": [
+        {
+          "name": "Full Pipeline Test - NEW Story",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"webhookEvent\": \"jira:issue_created\",\n  \"timestamp\": \"{{$timestamp}}\",\n  \"issue\": {\n    \"id\": \"10006\",\n    \"key\": \"NEW-001\",\n    \"fields\": {\n      \"summary\": \"Unique feature for testing AI pipeline\",\n      \"description\": \"This is a completely new feature that should trigger the NEW action in the decision engine. It includes complex business logic with multiple validation rules and integration points.\",\n      \"issuetype\": {\n        \"name\": \"Story\",\n        \"id\": \"10001\"\n      },\n      \"project\": {\n        \"key\": \"NEW\",\n        \"name\": \"New Project\"\n      },\n      \"assignee\": {\n        \"accountId\": \"ai.tester\",\n        \"displayName\": \"AI Tester\"\n      },\n      \"status\": {\n        \"name\": \"To Do\",\n        \"id\": \"10000\"\n      }\n    }\n  }\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/jira-webhook?issueKey=NEW-001&projectKey=NEW&user=ai.tester",
+              "host": ["{{base_url}}"],
+              "path": ["jira-webhook"],
+              "query": [
+                {
+                  "key": "issueKey",
+                  "value": "NEW-001"
+                },
+                {
+                  "key": "projectKey",
+                  "value": "NEW"
+                },
+                {
+                  "key": "user",
+                  "value": "ai.tester"
+                }
+              ]
+            },
+            "description": "Full pipeline test that should result in NEW action and AI test case generation"
+          },
+          "response": []
+        },
+        {
+          "name": "Full Pipeline Test - DUPLICATE Story",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"webhookEvent\": \"jira:issue_created\",\n  \"timestamp\": \"{{$timestamp}}\",\n  \"issue\": {\n    \"id\": \"10007\",\n    \"key\": \"DUP-001\",\n    \"fields\": {\n      \"summary\": \"User login functionality\",\n      \"description\": \"This should be detected as duplicate since we used this exact summary before\",\n      \"issuetype\": {\n        \"name\": \"Story\",\n        \"id\": \"10001\"\n      },\n      \"project\": {\n        \"key\": \"DUP\",\n        \"name\": \"Duplicate Test\"\n      },\n      \"assignee\": {\n        \"accountId\": \"dup.tester\",\n        \"displayName\": \"Duplicate Tester\"\n      },\n      \"status\": {\n        \"name\": \"To Do\",\n        \"id\": \"10000\"\n      }\n    }\n  }\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/jira-webhook?issueKey=DUP-001&projectKey=DUP&user=dup.tester",
+              "host": ["{{base_url}}"],
+              "path": ["jira-webhook"],
+              "query": [
+                {
+                  "key": "issueKey",
+                  "value": "DUP-001"
+                },
+                {
+                  "key": "projectKey",
+                  "value": "DUP"
+                },
+                {
+                  "key": "user",
+                  "value": "dup.tester"
+                }
+              ]
+            },
+            "description": "Test that should be detected as DUPLICATE due to matching summary"
+          },
+          "response": []
+        }
+      ],
+      "description": "End-to-end integration tests for complete AI pipeline"
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:3001",
+      "type": "string"
+    },
+    {
+      "key": "ngrok_url",
+      "value": "https://your-ngrok-url.ngrok.io",
+      "type": "string",
+      "disabled": true
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Set dynamic timestamp",
+          "pm.globals.set('timestamp', new Date().toISOString());"
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Basic response validation",
+          "pm.test('Status code is 200 or 400', function () {",
+          "    pm.expect(pm.response.code).to.be.oneOf([200, 400]);",
+          "});",
+          "",
+          "// Check response has JSON content",
+          "pm.test('Response is JSON', function () {",
+          "    pm.response.to.have.header('Content-Type');",
+          "    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');",
+          "});",
+          "",
+          "// Validate response structure for successful requests",
+          "if (pm.response.code === 200) {",
+          "    pm.test('Response has required fields', function () {",
+          "        const jsonData = pm.response.json();",
+          "        ",
+          "        // Health endpoint validation",
+          "        if (pm.request.url.toString().includes('/health')) {",
+          "            pm.expect(jsonData).to.have.property('status');",
+          "            pm.expect(jsonData).to.have.property('timestamp');",
+          "        }",
+          "        ",
+          "        // Webhook endpoint validation",
+          "        if (pm.request.method === 'POST' && !pm.request.url.toString().includes('/health')) {",
+          "            pm.expect(jsonData).to.have.property('status');",
+          "            pm.expect(jsonData).to.have.property('storyId');",
+          "            pm.expect(jsonData).to.have.property('processingTime');",
+          "            pm.expect(jsonData).to.have.property('timestamp');",
+          "            ",
+          "            // Check for query params in jira-webhook responses",
+          "            if (pm.request.url.toString().includes('/jira-webhook')) {",
+          "                pm.expect(jsonData).to.have.property('queryParams');",
+          "            }",
+          "        }",
+          "    });",
+          "}"
+        ]
+      }
+    }
+  ]
+}

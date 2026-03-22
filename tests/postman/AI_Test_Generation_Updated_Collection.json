@@ -1,0 +1,154 @@
+{
+  "info": {
+    "name": "AI Test Generation - Jira Webhook Collection",
+    "description": "Focused collection for testing the new Jira webhook endpoint with query parameters",
+    "version": "2.0.0",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Jira Webhook Health Check",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/jira-webhook/health",
+          "host": ["{{base_url}}"],
+          "path": ["jira-webhook", "health"]
+        },
+        "description": "Health check for the Jira webhook endpoint with query parameters"
+      },
+      "response": []
+    },
+    {
+      "name": "Jira Webhook - Test with Query Parameters",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"webhookEvent\": \"jira:issue_updated\",\n  \"timestamp\": \"{{$timestamp}}\",\n  \"issue\": {\n    \"id\": \"10080\",\n    \"key\": \"DEC-10080\",\n    \"fields\": {\n      \"summary\": \"Test issue for webhook validation\",\n      \"description\": \"This is a test issue to validate the jira-webhook endpoint with query parameters functionality.\",\n      \"issuetype\": {\n        \"name\": \"Story\",\n        \"id\": \"10001\"\n      },\n      \"project\": {\n        \"key\": \"DEC\",\n        \"name\": \"Decision Engine\"\n      },\n      \"assignee\": {\n        \"accountId\": \"ross.geller\",\n        \"displayName\": \"Ross Geller\"\n      },\n      \"status\": {\n        \"name\": \"In Progress\",\n        \"id\": \"10001\"\n      }\n    }\n  }\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/jira-webhook?issueKey=DEC-10080&projectKey=DEC&user=ross.geller",
+          "host": ["{{base_url}}"],
+          "path": ["jira-webhook"],
+          "query": [
+            {
+              "key": "issueKey",
+              "value": "DEC-10080"
+            },
+            {
+              "key": "projectKey",
+              "value": "DEC"
+            },
+            {
+              "key": "user",
+              "value": "ross.geller"
+            }
+          ]
+        },
+        "description": "Test the Jira webhook endpoint with query parameters as specified for ngrok integration"
+      },
+      "response": []
+    },
+    {
+      "name": "Jira Webhook - Production Format Test",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"webhookEvent\": \"jira:issue_created\",\n  \"timestamp\": \"{{$timestamp}}\",\n  \"issue\": {\n    \"id\": \"10081\",\n    \"key\": \"PROD-001\",\n    \"fields\": {\n      \"summary\": \"Production webhook test\",\n      \"description\": \"Testing the production webhook format that will be used with ngrok URL: https://your-ngrok-url.ngrok.io/jira-webhook?issueKey={issue.key}&projectKey={project.key}&user={modifiedUser.accountId}\",\n      \"issuetype\": {\n        \"name\": \"Story\",\n        \"id\": \"10001\"\n      },\n      \"project\": {\n        \"key\": \"PROD\",\n        \"name\": \"Production Project\"\n      },\n      \"assignee\": {\n        \"accountId\": \"production.user\",\n        \"displayName\": \"Production User\"\n      },\n      \"status\": {\n        \"name\": \"To Do\",\n        \"id\": \"10000\"\n      }\n    }\n  }\n}"
+        },
+        "url": {
+          "raw": "{{ngrok_url}}/jira-webhook?issueKey=PROD-001&projectKey=PROD&user=production.user",
+          "host": ["{{ngrok_url}}"],
+          "path": ["jira-webhook"],
+          "query": [
+            {
+              "key": "issueKey",
+              "value": "PROD-001"
+            },
+            {
+              "key": "projectKey",
+              "value": "PROD"
+            },
+            {
+              "key": "user",
+              "value": "production.user"
+            }
+          ]
+        },
+        "description": "Test using the ngrok URL format for production deployment"
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:3001",
+      "type": "string"
+    },
+    {
+      "key": "ngrok_url",
+      "value": "https://your-ngrok-url.ngrok.io",
+      "type": "string",
+      "description": "Replace with your actual ngrok URL when testing production setup"
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.globals.set('timestamp', new Date().toISOString());"
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('Status code is 200', function () {",
+          "    pm.response.to.have.status(200);",
+          "});",
+          "",
+          "pm.test('Response is JSON', function () {",
+          "    pm.response.to.be.json;",
+          "});",
+          "",
+          "pm.test('Response has required fields', function () {",
+          "    const jsonData = pm.response.json();",
+          "    ",
+          "    if (pm.request.url.toString().includes('/health')) {",
+          "        pm.expect(jsonData).to.have.property('status');",
+          "        pm.expect(jsonData.status).to.eql('healthy');",
+          "        pm.expect(jsonData).to.have.property('supportedParams');",
+          "    } else {",
+          "        pm.expect(jsonData).to.have.property('status');",
+          "        pm.expect(jsonData).to.have.property('storyId');",
+          "        pm.expect(jsonData).to.have.property('queryParams');",
+          "        pm.expect(jsonData.queryParams).to.have.property('issueKey');",
+          "        pm.expect(jsonData.queryParams).to.have.property('projectKey');",
+          "        pm.expect(jsonData.queryParams).to.have.property('user');",
+          "    }",
+          "});"
+        ]
+      }
+    }
+  ]
+}

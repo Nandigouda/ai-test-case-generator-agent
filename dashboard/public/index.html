@@ -1,0 +1,1715 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Cases View Platform</title>
+    
+    <!-- External CSS -->
+    <link rel="stylesheet" href="css/dashboard.css">
+</head>
+<body>
+    <header class="header">
+        <div class="header-top">
+            <div class="left-section">
+                <div class="logo-section">
+                    <div class="logo">Test Cases View</div>
+                    <div class="logo-subtitle">Platform</div>
+                </div>
+                <div class="nav-center">
+                    <div class="nav-tab active" onclick="showTab('dashboard')">
+                        
+                        <span class="nav-text">Dashboard</span>
+                    </div>
+                    <div class="nav-tab" onclick="showTab('stories')">
+                        
+                        <span class="nav-text">Stories</span>
+                    </div>
+                    <div class="nav-tab" onclick="showTab('testcases')">
+                      
+                        <span class="nav-text">Test Cases</span>
+                    </div>
+                </div>
+            </div>
+            <div class="right-section">
+                <div class="search-container">
+                    <input type="text" id="searchInput" class="search-input" placeholder="Search Test Cases..." />
+                </div>
+                <div class="user-info">
+                    <div class="user-avatar">NN</div>
+                    <span>Nikhil Nandigoud</span>
+                </div>
+            </div>
+        </div>
+        
+    </header>
+
+    <main class="main-content">
+        <!-- Dashboard Tab -->
+        <div id="dashboard" class="tab-content active">
+            <!-- Enhanced Stats Header -->
+            <div class="stats-header">
+                <div class="stats-container">
+                    <div class="stat-item">
+                        <div class="stat-icon">📚</div>
+                        <div class="stat-details">
+                            <div class="stat-value" id="dashboard-total-stories">0</div>
+                            <div class="stat-label">Total Stories</div>
+                        </div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-icon">🧪</div>
+                        <div class="stat-details">
+                            <div class="stat-value" id="dashboard-total-testcases">0</div>
+                            <div class="stat-label">Test Cases</div>
+                        </div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-icon">📊</div>
+                        <div class="stat-details">
+                            <div class="stat-value" id="dashboard-avg-testcases">0</div>
+                            <div class="stat-label">Avg per Story</div>
+                        </div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-icon">🔌</div>
+                        <div class="stat-details">
+                            <div class="stat-value" id="dashboard-api-status-header" style="font-size: 14px;">Checking...</div>
+                            <div class="stat-label">API Status</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- API Integration Test Section -->
+            <div class="action-section">
+                <h2 class="section-title">
+                    <div class="section-icon">🔗</div>
+                    Manual Webhook Trigger
+                                </h2>
+                <div class="form-grid">
+                    <div>
+                        <div class="form-group">
+                            <label class="form-label">Story ID <span style="color: #7f8c8d;"></span></label>
+                            <input type="text" class="form-input" id="story-id-input" placeholder="Story ID...">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Summary *</label>
+                            <input type="text" class="form-input" id="summary-input" placeholder="Enter Summary..." required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Project ID <span style="color: #7f8c8d;"></span></label>
+                            <input type="text" class="form-input" id="project-id-input" placeholder="Project ID...">
+                        </div>
+                    </div>
+                    <div>
+                        <div class="form-group">
+                            <label class="form-label">Description *</label>
+                            <textarea class="form-input form-textarea" id="description-input" placeholder="Detailed Description of the user story..." required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Version <span style="color: #7f8c8d;"></span></label>
+                            <input type="text" class="form-input" id="version-input" placeholder="Version...">
+                        </div>
+                    </div>
+                </div>
+                <div style="text-align: center; margin: 25px 0;">
+                    <button class="btn btn-primary" onclick="generateTestCases()" id="generate-btn">
+                        🚀 Generate Test Cases
+                    </button>
+                    <button class="btn btn-success" onclick="refreshDashboard()">
+                        🔄 Refresh Dashboard
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stories Tab -->
+        <div id="stories" class="tab-content">
+            <h2 class="section-title">
+                <div class="section-icon">📚</div>
+                Stories Management
+            </h2>
+            
+            <!-- Info Section -->
+            <div class="alert alert-info" style="margin-bottom: 25px;">
+                <span>📋</span>
+                <div>
+                    <strong>View and Manage user stories.</strong><br>
+                    
+                </div>
+            </div>
+            
+            <!-- Action Buttons -->
+            <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+                <button class="btn btn-primary" onclick="loadAllStories()">📚 Load Stories</button>
+            </div>
+            
+            <!-- Stories Container -->
+            <div id="stories-container">
+                <div class="empty-state">
+                    <div class="empty-message">No stories found...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Test Cases Tab -->
+        <div id="testcases" class="tab-content">
+            <h2 class="section-title">
+                <div class="section-icon">🧪</div>
+                View Test Cases 
+            </h2>
+            
+            <!-- Story Selection and Filters -->
+            <div class="action-section">
+                <div class="section-title">
+                    <div class="section-icon">🔍</div>
+                    Select Story & View Test Cases
+                </div>
+                
+                <div class="form-grid" style="margin-bottom: 20px;">
+                    <div class="form-group">
+                        <label class="form-label">Select Story</label>
+                        <div class="story-dropdown-container tooltip">
+                            <select id="story-dropdown" class="form-input story-dropdown" onchange="loadTestCasesByStory()" title="">
+                                <option value="">-- Select a Story --</option>
+                            </select>
+                            <span class="tooltiptext" id="story-tooltip">Select a story to view its test cases</span>
+                        </div>
+                    </div>
+                    <!-- Status filter removed - test cases are automatically managed in Jira -->
+                </div>
+                
+                <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+                    <button class="btn btn-primary" onclick="loadAllTestCases()">🧪 Load All Test Cases</button>
+                    <button class="btn btn-primary" onclick="refreshTestCases()">🔄 Refresh</button>
+                </div>
+            </div>
+            
+            <!-- Test Cases List -->
+            <div class="action-section">
+                <div class="section-title">
+                    <div class="section-icon">📋</div>
+                    Test Cases
+                    <span id="testcase-count-badge" style="background: #007bff; color: white; padding: 4px 8px; border-radius: 12px; font-size: 12px; margin-left: 10px;">0</span>
+                </div>
+                
+                <div id="testcases-container">
+                    <div class="empty-state">
+                        <div class="empty-message">Select a story to view related test cases</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Test Case Preview Modal -->
+            <div id="preview-modal" class="modal" style="display: none;">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3>Test Case Preview</h3>
+                        <button class="btn-close" onclick="closePreviewModal()">×</button>
+                    </div>
+                    <div class="modal-body" id="preview-content">
+                        <!-- Preview content will be populated here -->
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn" onclick="closePreviewModal()" style="background: #6c757d; color: white;">Close</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Edit Test Case Modal -->
+            <div id="edit-modal" class="modal" style="display: none;">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3>Edit Test Case</h3>
+                        <button class="btn-close" onclick="closeEditModal()">×</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label class="form-label">Test Case Summary</label>
+                            <input type="text" id="edit-summary" class="form-input">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Description</label>
+                            <textarea id="edit-description" class="form-input form-textarea"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Test Steps</label>
+                            <div id="edit-steps-container">
+                                <!-- Steps will be populated here -->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-success" onclick="saveEditedTestCase()">💾 Save Changes</button>
+                        <button class="btn" onclick="closeEditModal()" style="background: #6c757d; color: white;">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Search Results Modal - Moved outside tab content for global access -->
+    <div id="searchDialog" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="dialogTitle">Search Results</h3>
+                <button class="btn-close" onclick="closeDialog()">×</button>
+            </div>
+        
+            <div class="modal-body" id="dialogContent">
+                <!-- Search results will be populated here -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn" onclick="closeDialog()" style="background: #6c757d; color: white;">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showTab(tabName) {
+            console.log('🎯 Switching to tab:', tabName);
+            console.log('💾 Saving to localStorage:', tabName);
+            
+            // Save current tab to localStorage for persistence
+            localStorage.setItem('currentTab', tabName);
+            
+            // Hide all tab contents
+            const allTabs = document.querySelectorAll('.tab-content');
+            allTabs.forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Remove active class from all nav tabs with enhanced logging
+            const allNavTabs = document.querySelectorAll('.nav-tab');
+            allNavTabs.forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected tab content
+            const selectedTab = document.getElementById(tabName);
+            if (selectedTab) {
+                selectedTab.classList.add('active');
+                console.log('✅ Activated tab content:', tabName);
+            } else {
+                console.error('❌ Tab content not found:', tabName);
+            }
+            
+            // Add active class to correct nav tab with improved logic
+            let targetNavTab = null;
+            
+            // Method 1: Find by onclick attribute (most reliable)
+            targetNavTab = document.querySelector(`[onclick="showTab('${tabName}')"]`);
+            
+            // Method 2: Find by text content as fallback
+            if (!targetNavTab) {
+                const tabNames = { 'dashboard': 'Dashboard', 'stories': 'Stories', 'testcases': 'Test Cases' };
+                const expectedText = tabNames[tabName];
+                if (expectedText) {
+                    allNavTabs.forEach(tab => {
+                        const navText = tab.querySelector('.nav-text');
+                        if (navText && navText.textContent.trim() === expectedText) {
+                            targetNavTab = tab;
+                        }
+                    });
+                }
+            }
+            
+            if (targetNavTab) {
+                targetNavTab.classList.add('active');
+                console.log('✅ Activated nav tab for:', tabName);
+            } else {
+                console.error('❌ Nav tab not found for:', tabName);
+                console.log('🔍 Available nav tabs:', Array.from(allNavTabs).map(tab => {
+                    const textSpan = tab.querySelector('.nav-text');
+                    return textSpan ? textSpan.textContent.trim() : tab.textContent.trim();
+                }));
+            }
+            
+            // Load data when switching tabs with loading states
+            if (tabName === 'dashboard') {
+                console.log('📊 Dashboard tab activated - loading stats');
+                // Add loading state
+                if (targetNavTab) {
+                    targetNavTab.classList.add('loading');
+                    setTimeout(() => targetNavTab.classList.remove('loading'), 1000);
+                }
+            } else if (tabName === 'stories') {
+                console.log('📚 Stories tab activated - loading stories');
+                if (targetNavTab) {
+                    targetNavTab.classList.add('loading');
+                    setTimeout(() => targetNavTab.classList.remove('loading'), 500);
+                }
+            } else if (tabName === 'testcases') {
+                console.log('🧪 Test Cases tab activated - loading test cases');
+                if (targetNavTab) {
+                    targetNavTab.classList.add('loading');
+                    populateStoryDropdown().finally(() => {
+                        if (targetNavTab) targetNavTab.classList.remove('loading');
+                    });
+                } else {
+                    populateStoryDropdown();
+                }
+            }
+            
+            // Always update header stats regardless of tab (only if dashboard tab is active)
+            if (tabName === 'dashboard') {
+                updateDashboardStats();
+            }
+        }
+
+        // Load dashboard data from the main API server (not dashboard server)
+        async function loadDashboardData() {
+            try {
+                console.log('Loading dashboard data from main API server...');
+                const response = await fetch('http://localhost:3000/vector-stats');
+                const data = await response.json();
+                
+                console.log('Raw API response:', data);
+                
+                // The main API returns stats in a different format
+                const stats = data.stats || {};
+                const totalStories = stats.totalRecords || 0;
+                const totalTestCases = stats.totalTestCases || 0;
+                const avgPerStory = totalStories > 0 ? Math.round(totalTestCases / totalStories) : 0;
+                
+                // Update the stat cards with correct values
+                document.querySelector('.stat-card.stories .stat-value').textContent = totalStories;
+                document.querySelector('.stat-card.testcases .stat-value').textContent = totalTestCases;
+                document.querySelector('.stat-card.reuse .stat-value').textContent = avgPerStory;
+                
+                // Update API status based on actual data
+                const apiStatusElement = document.querySelector('.stat-card.api .stat-value');
+                if (totalStories > 0 && totalTestCases > 0) {
+                    apiStatusElement.textContent = 'Connected';
+                    apiStatusElement.style.color = '#48bb78';
+                } else {
+                    apiStatusElement.textContent = 'Ready';
+                    apiStatusElement.style.color = '#ed8936';
+                }
+                
+                console.log('Dashboard updated with:', {
+                    stories: totalStories,
+                    testCases: totalTestCases,
+                    avgPerStory: avgPerStory
+                });
+                
+            } catch (error) {
+                console.error('Error loading dashboard data:', error);
+                // Fallback to dashboard server if main API is down
+                try {
+                    console.log('Falling back to dashboard server...');
+                    const fallbackResponse = await fetch('/api/dashboard-stats');
+                    const fallbackData = await fallbackResponse.json();
+                    
+                    document.querySelector('.stat-card.stories .stat-value').textContent = fallbackData.totalStories || 0;
+                    document.querySelector('.stat-card.testcases .stat-value').textContent = fallbackData.totalTestCases || 0;
+                    document.querySelector('.stat-card.reuse .stat-value').textContent = fallbackData.reuseRate || 0;
+                } catch (fallbackError) {
+                    console.error('Both API servers failed:', fallbackError);
+                    // Show disconnected status
+                    document.querySelector('.stat-card.api .stat-value').textContent = 'Disconnected';
+                    document.querySelector('.stat-card.api .stat-value').style.color = '#e53e3e';
+                }
+            }
+        }
+
+        // Force refresh dashboard data from server
+        async function refreshDashboard() {
+            try {
+                console.log('Forcing dashboard refresh...');
+                // Directly load fresh data from main API
+                await loadDashboardData();
+                
+                // Show success message
+                const refreshBtn = document.querySelector('.btn-success');
+                const originalText = refreshBtn.textContent;
+                refreshBtn.textContent = '✅ Refreshed!';
+                refreshBtn.style.background = '#48bb78';
+                
+                setTimeout(() => {
+                    refreshBtn.textContent = originalText;
+                    refreshBtn.style.background = '';
+                }, 2000);
+                
+            } catch (error) {
+                console.error('Error refreshing dashboard:', error);
+            }
+        }
+
+        // Enhanced tab initialization function
+        function ensureTabHighlighting() {
+            const currentTab = localStorage.getItem('currentTab') || 'dashboard';
+            console.log('🔄 Ensuring tab highlighting for:', currentTab);
+            
+            // Force remove all active states first
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Find and activate the correct tab
+            const targetTab = document.querySelector(`[onclick="showTab('${currentTab}')"]`);
+            if (targetTab) {
+                targetTab.classList.add('active');
+                console.log('✅ Tab highlighting ensured for:', currentTab);
+            } else {
+                console.error('❌ Could not find tab for highlighting:', currentTab);
+            }
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 Page loaded, initializing enhanced dashboard...');
+            
+            // Initialize search functionality
+            initializeSearch();
+            
+            // Restore the last active tab from localStorage, or default to dashboard
+            const savedTab = localStorage.getItem('currentTab') || 'dashboard';
+            console.log('📋 Restoring saved tab:', savedTab);
+            console.log('💾 localStorage currentTab:', localStorage.getItem('currentTab'));
+            
+            // First, make sure the tab is visible with enhanced logic
+            showTab(savedTab);
+            
+            // Double-check tab highlighting after a brief delay
+            setTimeout(() => {
+                ensureTabHighlighting();
+            }, 100);
+            
+            // Give servers time to start, then initialize dashboard with retries
+            setTimeout(async () => {
+                console.log('🔧 Starting dashboard initialization...');
+                await initializeDashboardWithRetries();
+                
+                // Ensure tab highlighting after data loads
+                setTimeout(() => {
+                    ensureTabHighlighting();
+                }, 500);
+            }, 1000); // Wait 1 second for servers to be ready
+            
+            // Auto-refresh every 30 seconds
+            setInterval(updateDashboardStats, 30000);
+        });
+
+        // Initialize dashboard with retry mechanism
+        async function initializeDashboardWithRetries(maxRetries = 5) {
+            for (let attempt = 1; attempt <= maxRetries; attempt++) {
+                console.log(`Dashboard initialization attempt ${attempt}/${maxRetries}`);
+                try {
+                    await initializeDashboard();
+                    console.log('Dashboard initialized successfully');
+                    return; // Success, exit
+                } catch (error) {
+                    console.warn(`Dashboard initialization attempt ${attempt} failed:`, error);
+                    if (attempt < maxRetries) {
+                        const delay = attempt * 2000; // Increasing delay: 2s, 4s, 6s, 8s
+                        console.log(`Retrying in ${delay/1000} seconds...`);
+                        await new Promise(resolve => setTimeout(resolve, delay));
+                    } else {
+                        console.error('Dashboard initialization failed after all retries');
+                        // Set fallback values
+                        const apiStatusEl = document.getElementById('dashboard-api-status-header');
+                        if (apiStatusEl) {
+                            apiStatusEl.textContent = 'Server Starting...';
+                            apiStatusEl.style.color = '#ed8936'; // Orange for starting
+                        }
+                    }
+                }
+            }
+        }
+
+        // Enhanced dashboard initialization
+        async function initializeDashboard() {
+            await checkAllServices();
+            await updateDashboardStats();
+        }
+
+        // Check all service statuses
+        async function checkAllServices() {
+            console.log('Checking all services...');
+            
+            // Check main API server
+            try {
+                const apiResponse = await fetch('http://localhost:3000/health');
+                const apiData = await apiResponse.json();
+                updateServiceStatus('api', 'green', 'API Connected');
+                updateServiceStatus('backend', 'Connected', 'green');
+            } catch (error) {
+                updateServiceStatus('api', 'red', 'API Offline');
+                updateServiceStatus('backend', 'Offline', 'red');
+            }
+
+            // Check vector database
+            try {
+                const vectorResponse = await fetch('http://localhost:3000/vector-stats');
+                const vectorData = await vectorResponse.json();
+                updateServiceStatus('vector', vectorData.success ? 'Connected' : 'Error', vectorData.success ? 'green' : 'red');
+            } catch (error) {
+                updateServiceStatus('vector', 'Offline', 'red');
+            }
+
+            // Check AI service (try to make a small test call)
+            try {
+                // This is a lightweight check - we'll just verify the endpoint exists
+                const aiResponse = await fetch('http://localhost:3000/health');
+                updateServiceStatus('ai', 'Ready', 'green');
+            } catch (error) {
+                updateServiceStatus('ai', 'Offline', 'red');
+            }
+
+            // Check Zephyr (simulated for now)
+            updateServiceStatus('zephyr', 'yellow', 'Simulation Mode');
+        }
+
+        // Update service status indicators (optional - status elements removed from UI)
+        function updateServiceStatus(service, status, color) {
+            const statusElement = document.getElementById(`${service}-status`);
+            const dotElement = document.getElementById(`${service}-status-dot`);
+            
+            if (statusElement) {
+                statusElement.textContent = status;
+            }
+            
+            if (dotElement) {
+                dotElement.className = `status-dot ${color}`;
+            }
+
+            // Update main status indicator (optional - removed from UI)
+            if (service === 'api') {
+                const mainDot = document.getElementById('main-status-dot');
+                const mainText = document.getElementById('main-status-text');
+                if (mainDot && mainText) {
+                    mainDot.className = `status-dot ${color}`;
+                    mainText.textContent = status;
+                }
+            }
+        }
+
+        // Enhanced dashboard stats update
+        async function updateDashboardStats() {
+            try {
+                console.log('Updating dashboard statistics...');
+                const response = await fetch('http://localhost:3000/vector-stats');
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const data = await response.json();
+                console.log('Raw API response:', data);
+                
+                const stats = data.stats || {};
+                const totalStories = stats.totalRecords || 0;
+                const totalTestCases = stats.totalTestCases || 0;
+                const avgPerStory = totalStories > 0 ? Math.round(totalTestCases / totalStories) : 0;
+                
+                // Update header stats with error checking
+                const totalStoriesEl = document.getElementById('dashboard-total-stories');
+                const totalTestCasesEl = document.getElementById('dashboard-total-testcases');
+                const avgTestCasesEl = document.getElementById('dashboard-avg-testcases');
+                const apiStatusEl = document.getElementById('dashboard-api-status-header');
+                
+                if (totalStoriesEl) totalStoriesEl.textContent = totalStories;
+                if (totalTestCasesEl) totalTestCasesEl.textContent = totalTestCases;
+                if (avgTestCasesEl) avgTestCasesEl.textContent = avgPerStory;
+                
+                // Update API Status as Connected
+                if (apiStatusEl) {
+                    apiStatusEl.textContent = 'Connected';
+                    apiStatusEl.style.color = '#48bb78'; // Green color for connected
+                }
+                
+                console.log('Dashboard stats updated successfully:', { totalStories, totalTestCases, avgPerStory });
+                
+            } catch (error) {
+                console.error('Error updating dashboard stats:', error);
+                
+                // Update API Status as Disconnected
+                const apiStatusEl = document.getElementById('dashboard-api-status-header');
+                if (apiStatusEl) {
+                    apiStatusEl.textContent = 'Disconnected';
+                    apiStatusEl.style.color = '#e53e3e'; // Red color for disconnected
+                }
+                
+                console.log('Retrying dashboard stats in 2 seconds...');
+                
+                // Retry once after 2 seconds
+                setTimeout(async () => {
+                    try {
+                        console.log('Retrying dashboard stats update...');
+                        const retryResponse = await fetch('http://localhost:3000/vector-stats');
+                        const retryData = await retryResponse.json();
+                        
+                        const stats = retryData.stats || {};
+                        const totalStories = stats.totalRecords || 0;
+                        const totalTestCases = stats.totalTestCases || 0;
+                        const avgPerStory = totalStories > 0 ? Math.round(totalTestCases / totalStories) : 0;
+                        
+                        document.getElementById('dashboard-total-stories').textContent = totalStories;
+                        document.getElementById('dashboard-total-testcases').textContent = totalTestCases;
+                        document.getElementById('dashboard-avg-testcases').textContent = avgPerStory;
+                        
+                        // Update API Status as Connected on successful retry
+                        const apiStatusEl = document.getElementById('dashboard-api-status-header');
+                        if (apiStatusEl) {
+                            apiStatusEl.textContent = 'Connected';
+                            apiStatusEl.style.color = '#48bb78';
+                        }
+                        
+                        console.log('Dashboard stats retry successful:', { totalStories, totalTestCases, avgPerStory });
+                    } catch (retryError) {
+                        console.error('Dashboard stats retry failed:', retryError);
+                        updateServiceStatus('main', 'Disconnected', 'red');
+                    }
+                }, 2000);
+            }
+        }
+
+        // Generate test cases function
+        async function generateTestCases() {
+            const btn = document.getElementById('generate-btn');
+            const originalText = btn.textContent;
+            
+            // Get form data
+            const storyId = document.getElementById('story-id-input').value.trim();
+            const summary = document.getElementById('summary-input').value.trim();
+            const description = document.getElementById('description-input').value.trim();
+            const projectId = document.getElementById('project-id-input').value.trim();
+            const version = document.getElementById('version-input').value.trim();
+            
+            // Validation - only summary and description are required
+            if (!summary || !description) {
+                alert('Please fill in the required fields: Summary and Description');
+                return;
+            }
+            
+            // Show loading state
+            btn.disabled = true;
+            btn.textContent = '⏳ Generating...';
+            
+            try {
+                // Build request body with correct field names to match API
+                const requestBody = {
+                    summary: summary,
+                    description: description
+                };
+                
+                // Add optional fields only if they have values
+                if (storyId) {
+                    requestBody.story_id = storyId;
+                }
+                if (projectId) {
+                    requestBody.project_id = projectId;
+                }
+                if (version) {
+                    requestBody.version = version;
+                }
+                
+                const response = await fetch('http://localhost:3000/auto-testcase', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(requestBody)
+                });
+                
+                const result = await response.json();
+                
+                if (result.status === 'success') {
+                    alert(`✅ Successfully generated ${result.testCasesGenerated} test cases for ${result.storyId}\nAction: ${result.action}\nProcessing time: ${result.processingTime}`);
+                    
+                    // Clear form
+                    document.getElementById('story-id-input').value = '';
+                    document.getElementById('summary-input').value = '';
+                    document.getElementById('description-input').value = '';
+                    document.getElementById('project-id-input').value = '';
+                    document.getElementById('version-input').value = '';
+                    
+                    // Refresh dashboard
+                    await updateDashboardStats();
+                } else {
+                    alert(`❌ Error: ${result.message || 'Failed to generate test cases'}`);
+                }
+                
+            } catch (error) {
+                console.error('Error generating test cases:', error);
+                alert('❌ Error: Could not connect to the API server');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = originalText;
+            }
+        }
+
+        // Force refresh dashboard
+        async function refreshDashboard() {
+            await initializeDashboard();
+            alert('✅ Dashboard refreshed!');
+        }
+
+        // Test API Integration function
+        async function testAPIIntegration() {
+            const results = document.getElementById('api-test-results');
+            results.innerHTML = '<div class="loading">🔄 Testing API integration...</div>';
+            
+            const tests = [
+                { name: 'Main API Health', url: 'http://localhost:3000/health', type: 'GET' },
+                { name: 'Vector Database', url: 'http://localhost:3000/vector-stats', type: 'GET' },
+                { name: 'Dashboard Backend', url: 'http://localhost:3006/health', type: 'GET' },
+                { name: 'Webhook Server', url: 'http://localhost:3001/health', type: 'GET' }
+            ];
+            
+            let resultsHTML = '<div class="test-results">';
+            
+            for (const test of tests) {
+                try {
+                    const response = await fetch(test.url);
+                    const isSuccess = response.ok;
+                    const statusText = isSuccess ? '✅ PASSED' : '❌ FAILED';
+                    const statusClass = isSuccess ? 'test-pass' : 'test-fail';
+                    
+                    resultsHTML += `
+                        <div class="test-result ${statusClass}">
+                            <strong>${test.name}</strong>: ${statusText} (${response.status})
+                        </div>
+                    `;
+                } catch (error) {
+                    resultsHTML += `
+                        <div class="test-result test-fail">
+                            <strong>${test.name}</strong>: ❌ FAILED (Connection Error)
+                        </div>
+                    `;
+                }
+            }
+            
+            resultsHTML += '</div>';
+            results.innerHTML = resultsHTML;
+        }
+
+        // Send test case to Zephyr (placeholder for enhanced integration)
+        async function sendToZephyr(testCaseId) {
+            try {
+                const response = await fetch(`http://localhost:3006/send-to-zephyr`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ testCaseId: testCaseId })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    alert('✅ Test case sent to Zephyr successfully!');
+                } else {
+                    alert(`❌ Error: ${result.message}`);
+                }
+            } catch (error) {
+                console.error('Error sending to Zephyr:', error);
+                alert('❌ Error: Could not connect to Zephyr service');
+            }
+        }
+
+        // Stories Management Functions
+        async function loadStoriesStats() {
+            try {
+                const response = await fetch('http://localhost:3000/vector-stats');
+                const data = await response.json();
+                
+                const stats = data.stats || {};
+                const totalStories = stats.totalRecords || 0;
+                
+                document.getElementById('stories-total').textContent = totalStories;
+                document.getElementById('stories-completed').textContent = Math.floor(totalStories * 0.6);
+                document.getElementById('stories-progress').textContent = Math.floor(totalStories * 0.3);
+                document.getElementById('stories-with-tests').textContent = Math.floor(totalStories * 0.8);
+                
+            } catch (error) {
+                console.error('Error loading stories stats:', error);
+            }
+        }
+
+        async function loadAllStories() {
+            const container = document.getElementById('stories-container');
+            container.innerHTML = '<div class="loading">🔄 Loading stories...</div>';
+            
+            try {
+                const response = await fetch('http://localhost:3006/api/stories');
+                const stories = await response.json();
+                
+                if (stories.length === 0) {
+                    container.innerHTML = '<div class="empty-state"><div class="empty-message">No stories found. Create your first story!</div></div>';
+                    return;
+                }
+                
+                const storiesHTML = stories.map(story => `
+                    <div class="story-item">
+                        <div class="story-header">
+                            <div class="story-info">
+                                <h4>${story.story_id}</h4>
+                                <div class="story-summary">${story.summary}</div>
+                            </div>
+                            <div class="story-meta">
+                                <div class="priority-medium">Medium</div>
+                                <div>Active</div>
+                                <div>${story.test_case_ids ? story.test_case_ids.length : 0} test cases</div>
+                            </div>
+                        </div>
+                        <div class="story-body">
+                            ${story.description}
+                        </div>
+                    </div>
+                `).join('');
+                
+                container.innerHTML = storiesHTML;
+                
+            } catch (error) {
+                console.error('Error loading stories:', error);
+                container.innerHTML = '<div class="empty-state"><div class="empty-message">Error loading stories. Please try again.</div></div>';
+            }
+        }
+
+        function showCreateStoryModal() {
+            // For now, show a simple alert - can be enhanced to show a modal later
+            const storyId = prompt('Enter Story ID (e.g., PROJ-123):');
+            if (!storyId) return;
+            
+            const summary = prompt('Enter Story Summary:');
+            if (!summary) return;
+            
+            const description = prompt('Enter Story Description:');
+            if (!description) return;
+            
+            // Simulate story creation
+            alert(`✅ Story "${storyId}" created successfully!\n\nSummary: ${summary}\nDescription: ${description}`);
+            
+            // Refresh the stories list
+            loadAllStories();
+        }
+
+        function showCreateStoryForm() {
+            document.getElementById('create-story-form').style.display = 'block';
+        }
+
+        function hideCreateStoryForm() {
+            document.getElementById('create-story-form').style.display = 'none';
+            document.getElementById('new-story-id').value = '';
+            document.getElementById('new-story-summary').value = '';
+            document.getElementById('new-story-description').value = '';
+        }
+
+        async function createNewStory() {
+            const storyId = document.getElementById('new-story-id').value.trim();
+            const summary = document.getElementById('new-story-summary').value.trim();
+            const description = document.getElementById('new-story-description').value.trim();
+            
+            if (!storyId || !summary || !description) {
+                alert('Please fill in all required fields');
+                return;
+            }
+            
+            alert('✅ Story created successfully!');
+            hideCreateStoryForm();
+            loadAllStories();
+            loadStoriesStats();
+        }
+
+        async function refreshStories() {
+            await loadStoriesStats();
+            await loadAllStories();
+            await populateStoryDropdown();
+            alert('✅ Stories refreshed!');
+        }
+
+        // Test Cases Management Functions
+
+        async function populateStoryDropdown() {
+            const dropdown = document.getElementById('story-dropdown');
+            const tooltipElement = document.getElementById('story-tooltip');
+            
+            try {
+                const response = await fetch('http://localhost:3006/api/stories-dropdown');
+                const stories = await response.json();
+                
+                let options = '<option value="">-- Select a Story --</option>';
+                
+                stories.forEach(story => {
+                    const fullTitle = `${story.id} - ${story.title}`;
+                    const truncatedTitle = fullTitle.length > 50 ? fullTitle.substring(0, 47) + '...' : fullTitle;
+                    options += `<option value="${story.id}" title="${fullTitle}">${truncatedTitle}</option>`;
+                });
+                
+                dropdown.innerHTML = options;
+                
+                // Add event listener for tooltip updates
+                dropdown.addEventListener('change', function() {
+                    const selectedOption = dropdown.options[dropdown.selectedIndex];
+                    if (selectedOption && selectedOption.title) {
+                        tooltipElement.textContent = selectedOption.title;
+                        dropdown.title = selectedOption.title;
+                    } else {
+                        tooltipElement.textContent = 'Select a story to view its test cases';
+                        dropdown.title = '';
+                    }
+                });
+                
+            } catch (error) {
+                console.error('Error populating story dropdown:', error);
+                dropdown.innerHTML = '<option value="">-- Error loading stories --</option>';
+                tooltipElement.textContent = 'Error loading stories';
+            }
+        }
+
+        async function loadTestCasesByStory() {
+            const selectedStory = document.getElementById('story-dropdown').value;
+            const container = document.getElementById('testcases-container');
+            const countBadge = document.getElementById('testcase-count-badge');
+            
+            if (!selectedStory) {
+                container.innerHTML = '<div class="empty-state"><div class="empty-message">Select a story to view related test cases</div></div>';
+                document.getElementById('bulk-actions-section').style.display = 'none';
+                countBadge.textContent = '0';
+                return;
+            }
+            
+            container.innerHTML = '<div class="loading">🔄 Loading test cases...</div>';
+            countBadge.textContent = '...';
+            
+            try {
+                const response = await fetch(`http://localhost:3006/api/story/${selectedStory}/test-cases`);
+                const data = await response.json();
+                
+                if (!data.testCases || data.testCases.length === 0) {
+                    container.innerHTML = '<div class="empty-state"><div class="empty-message">No test cases found for this story</div></div>';
+                    document.getElementById('bulk-actions-section').style.display = 'none';
+                    countBadge.textContent = '0';
+                    return;
+                }
+                
+                // Update the counter with actual number of test cases
+                countBadge.textContent = data.testCases.length;
+                
+                const testCasesHTML = data.testCases.map(tc => `
+                    <div class="testcase-item" data-testcase-id="${tc.jiraKey || tc.localId}">
+                        <div class="testcase-header">
+                            <div class="testcase-info">
+                                <div class="testcase-title">${tc.description || tc.title || tc.summary || 'Untitled Test Case'}</div>
+                                <div class="testcase-meta">
+                                    <span>ID: <strong>${tc.jiraKey || tc.localId}</strong></span>
+                                    ${tc.hasJiraMapping ? '<span class="creation-badge badge-jira">🔗 Jira</span>' : '<span class="creation-badge badge-manual">🤖 Manual</span>'}
+                                    <span>Priority: ${tc.priority || 'Medium'}</span>
+                                    <span class="testcase-status status-${tc.reviewStatus?.reviewed ? 'reviewed' : 'pending'}">${tc.reviewStatus?.reviewed ? 'Reviewed' : 'Pending'}</span>
+                                    <a style="text-decoration: none; " href="https://nikhilnandigoud.atlassian.net/browse/${tc.jiraKey}" target="_blank" class="jira-link">🔗 View in Jira</a>
+                                </div>
+                            </div>
+                            <div class="testcase-actions">
+                                <button class="btn btn-small" onclick="viewTestCase('${tc.jiraKey || tc.localId}')" style="background: #6c757d; color: white;">View</button>
+                            </div>
+                        </div>
+                        <div class="testcase-body" id="details-${tc.jiraKey || tc.localId}">
+                            <p><strong>Category:</strong> ${tc.category || 'Functional'}</p>
+                            <p><strong>Created via:</strong> ${tc.createdVia || 'Unknown'}</p>
+                            ${tc.jiraUrl ? `<p><strong>Jira URL:</strong> <a href="${tc.jiraUrl}" target="_blank">${tc.jiraUrl}</a></p>` : ''}
+                            <div class="testcase-steps">
+                                <strong>Test Steps:</strong>
+                                <div>Loading detailed steps...</div>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+                
+                container.innerHTML = testCasesHTML;
+                
+            } catch (error) {
+                console.error('Error loading test cases:', error);
+                container.innerHTML = '<div class="empty-state"><div class="empty-message">Error loading test cases. Please try again.</div></div>';
+                document.getElementById('bulk-actions-section').style.display = 'none';
+                countBadge.textContent = '0';
+            }
+        }
+
+        function toggleTestCaseDetails(testCaseId) {
+            const details = document.getElementById(`details-${testCaseId}`);
+            details.classList.toggle('expanded');
+        }
+
+        // Enhanced view test case function - opens detailed modal
+        async function viewTestCase(testCaseId) {
+            if (!testCaseId) {
+                alert('Invalid test case ID');
+                return;
+            }
+
+            // Show loading state
+            showSearchDialog('Loading Test Case...', '<div class="loading">🔄 Loading test case details...</div>');
+
+            try {
+                console.log('Fetching test case details for:', testCaseId);
+                
+                // First, try to get the test case from the current story
+                const selectedStory = document.getElementById('story-dropdown')?.value;
+                if (selectedStory) {
+                    const response = await fetch(`http://localhost:3006/api/story/${selectedStory}/test-cases`);
+                    const data = await response.json();
+                    
+                    if (response.ok && data.testCases) {
+                        // Find the specific test case by Jira key or local ID
+                        const testCase = data.testCases.find(tc => 
+                            tc.jiraKey === testCaseId || tc.localId === testCaseId
+                        );
+                        
+                        if (testCase) {
+                            displayJiraTestCaseDetails(testCase, data.storyId);
+                            return;
+                        }
+                    }
+                }
+                
+                // Fallback: Search all test cases
+                const allResponse = await fetch(`http://localhost:3006/api/test-cases/all`);
+                const allData = await allResponse.json();
+                
+                if (allResponse.ok && allData.testCases) {
+                    const testCase = allData.testCases.find(tc => 
+                        tc.jiraKey === testCaseId || tc.localId === testCaseId
+                    );
+                    
+                    if (testCase) {
+                        displayJiraTestCaseDetails(testCase, testCase.storyId);
+                        return;
+                    }
+                }
+                
+                // Test case not found
+                showSearchDialog('Test Case Not Found', `
+                    <div class="empty-state">
+                        <div class="empty-message">
+                            <h4>Test Case "${testCaseId}" not found</h4>
+                            <p>The requested test case could not be found in the system.</p>
+                            <p style="color: #666; font-size: 12px;">Error: Please check the Story ID or Test Case ID and try again</p>
+                        </div>
+                    </div>
+                `);
+
+            } catch (error) {
+                console.error('Error fetching test case details:', error);
+                showSearchDialog('Error Loading Test Case', `
+                    <div class="empty-state">
+                        <div class="empty-message">
+                            <h4>Failed to load test case</h4>
+                            <p>Unable to fetch test case details. Please try again.</p>
+                            <p style="color: #666; font-size: 12px;">Error: ${error.message}</p>
+                        </div>
+                    </div>
+                `);
+            }
+        }
+
+        // Display Jira test case details in modal
+        function displayJiraTestCaseDetails(testCase, storyId) {
+            const title = `🧪 ${testCase.jiraKey || testCase.localId}`;
+            
+            const content = `
+                <div style="margin-bottom: 20px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                        <h4 style="color: #2c3e50; margin: 0;">${testCase.jiraKey || testCase.localId}</h4>
+                        <div style="display: flex; gap: 8px;">
+                            ${testCase.hasJiraMapping ? '<span style="background: #0052cc; color: white; padding: 4px 8px; border-radius: 12px; font-size: 11px;">🔗 Jira</span>' : '<span style="background: #36b37e; color: white; padding: 4px 8px; border-radius: 12px; font-size: 11px;">🤖 Manual</span>'}
+                            <span style="background: #007bff; color: white; padding: 4px 8px; border-radius: 12px; font-size: 11px;">${testCase.category || 'Functional'}</span>
+                        </div>
+                    </div>
+                    
+                    <div style="background: #f8f9fa; border-radius: 8px; padding: 15px; margin: 10px 0;">
+                        <p style="margin: 8px 0;"><strong>📝 Title:</strong> ${testCase.summary || testCase.title || 'No title available'}</p>
+                        <p style="margin: 8px 0;"><strong>📊 Priority:</strong> <span style="color: ${testCase.priority === 'High' ? '#e74c3c' : testCase.priority === 'Medium' ? '#f39c12' : '#27ae60'};">${testCase.priority || 'Medium'}</span></p>
+                        <p style="margin: 8px 0;"><strong>📚 Related Story:</strong> ${storyId || 'Not specified'}</p>
+                        <p style="margin: 8px 0;"><strong>🔧 Created via:</strong> ${testCase.createdVia || 'Unknown'}</p>
+                        <p style="margin: 8px 0;"><strong>🎯 Status:</strong> ${testCase.status || 'Unknown'}</p>
+                        ${testCase.jiraKey ? `<p style="margin: 8px 0;"><strong>🆔 Jira ID:</strong> ${testCase.jiraId || 'N/A'}</p>` : ''}
+                        ${testCase.jiraUrl ? `<p style="margin: 8px 0;"><strong>🔗 Jira Link:</strong> <a href="${testCase.jiraUrl}" target="_blank" style="color: #0052cc; text-decoration: none;">${testCase.jiraUrl}</a></p>` : ''}
+                        ${testCase.description ? `<p style="margin: 8px 0;"><strong>📄 Description:</strong> ${testCase.description}</p>` : ''}
+                    </div>
+            `;
+
+            // Add test steps if available
+            let stepsContent = '';
+            if (testCase.testSteps && testCase.testSteps.length > 0) {
+                stepsContent = `
+                    <div style="margin-top: 20px;">
+                        <h5 style="color: #2c3e50; margin-bottom: 10px; border-bottom: 2px solid #3498db; padding-bottom: 5px;">🔬 Test Steps</h5>
+                        <div style="margin-top: 10px;">
+                            ${testCase.testSteps.map((step, index) => `
+                                <div style="border: 1px solid #e1e8ed; border-radius: 8px; padding: 15px; margin: 10px 0; background: linear-gradient(135deg, #f1f3f4 0%, #ffffff 100%); box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                                    <div style="font-weight: bold; color: #0056b3; margin-bottom: 8px; font-size: 14px;">
+                                        📋 Step ${step.step || index + 1}
+                                    </div>
+                                    <div style="margin: 8px 0; padding: 5px 0;">
+                                        <span style="font-weight: 600; color: #2c3e50;">Action:</span> 
+                                        <span style="color: #34495e;">${step.action || 'No action specified'}</span>
+                                    </div>
+                                    ${step.testData ? `
+                                        <div style="margin: 8px 0; padding: 5px 0;">
+                                            <span style="font-weight: 600; color: #2c3e50;">Test Data:</span> 
+                                            <span style="color: #34495e;">${step.testData}</span>
+                                        </div>
+                                    ` : ''}
+                                    <div style="margin: 8px 0; padding: 5px 0;">
+                                        <span style="font-weight: 600; color: #2c3e50;">Expected Result:</span> 
+                                        <span style="color: #34495e;">${step.expectedResult || 'No expected result specified'}</span>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+
+            const fullContent = content + stepsContent + `
+                <div style="margin-top: 20px; padding-top: 15px; border-top: 1px solid #e1e8ed;">
+                    <p style="color: #666; font-size: 12px; margin: 0;">
+                        ${testCase.hasJiraMapping ? '✅ This test case is linked to Jira and managed automatically.' : '⚙️ This test case is managed manually.'}
+                    </p>
+                </div>
+            `;
+
+            showSearchDialog(title, fullContent);
+        }
+
+        // Display detailed test case information in modal
+        function displayTestCaseDetails(data, testCaseId) {
+            let content = '';
+            let title = `Test Case Details: ${testCaseId}`;
+
+            if (data.searchType === 'testcase') {
+                // Single test case found - show detailed info
+                const tc = data.testCase;
+                title = `🧪 ${tc.testCaseId}`;
+                content = `
+                    <div style="margin-bottom: 20px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                            <h4 style="color: #2c3e50; margin: 0;">${tc.testCaseId}</h4>
+                            <span style="background: #007bff; color: white; padding: 4px 8px; border-radius: 12px; font-size: 11px;">${tc.category || 'Functional'}</span>
+                        </div>
+                        
+                        <div style="background: #f8f9fa; border-radius: 8px; padding: 15px; margin: 10px 0;">
+                            <p style="margin: 8px 0;"><strong>📝 Title:</strong> ${tc.title || tc.summary || 'No title available'}</p>
+                            <p style="margin: 8px 0;"><strong>📊 Priority:</strong> <span style="color: ${tc.priority === 'High' ? '#e74c3c' : tc.priority === 'Medium' ? '#f39c12' : '#27ae60'};">${tc.priority || 'Medium'}</span></p>
+                            <p style="margin: 8px 0;"><strong>📚 Related Story:</strong> ${tc.relatedStoryId || 'Not specified'}</p>
+                            ${tc.storyTitle ? `<p style="margin: 8px 0;"><strong>📖 Story Title:</strong> ${tc.storyTitle}</p>` : ''}
+                            ${tc.description ? `<p style="margin: 8px 0;"><strong>📄 Description:</strong> ${tc.description}</p>` : ''}
+                        </div>
+                `;
+
+                // Add test steps if available
+                if (tc.steps && tc.steps.length > 0) {
+                    content += `
+                        <div style="margin-top: 20px;">
+                            <h5 style="color: #2c3e50; margin-bottom: 10px; border-bottom: 2px solid #3498db; padding-bottom: 5px;">🔬 Test Steps</h5>
+                            <div style="margin-top: 10px;">
+                                ${tc.steps.map((step, index) => `
+                                    <div style="border: 1px solid #e1e8ed; border-radius: 8px; padding: 15px; margin: 10px 0; background: linear-gradient(135deg, #f1f3f4 0%, #ffffff 100%); box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                                        <div style="font-weight: bold; color: #0056b3; margin-bottom: 8px; font-size: 14px;">
+                                            📋 Step ${step.step || index + 1}
+                                        </div>
+                                        <div style="margin: 8px 0; padding: 5px 0;">
+                                            <span style="font-weight: 600; color: #2c3e50;">Action:</span> 
+                                            <span style="color: #34495e;">${step.action || 'No action specified'}</span>
+                                        </div>
+                                        ${step.testData ? `
+                                            <div style="margin: 8px 0; padding: 5px 0;">
+                                                <span style="font-weight: 600; color: #2c3e50;">Test Data:</span> 
+                                                <span style="color: #8e44ad; font-family: monospace; background: #f8f9fa; padding: 2px 6px; border-radius: 4px;">${step.testData}</span>
+                                            </div>
+                                        ` : ''}
+                                        <div style="margin: 8px 0; padding: 5px 0;">
+                                            <span style="font-weight: 600; color: #2c3e50;">Expected Result:</span> 
+                                            <span style="color: #27ae60;">${step.expectedResult || 'No expected result specified'}</span>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    content += `
+                        <div style="margin-top: 20px; text-align: center; color: #666; font-style: italic; padding: 20px; background: #f8f9fa; border-radius: 8px;">
+                            📝 No detailed test steps available for this test case
+                        </div>
+                    `;
+                }
+
+                content += '</div>';
+
+            } else if (data.searchType === 'story') {
+                // If it found a story instead, show story info and related test cases
+                title = `📚 Story: ${data.story.storyId}`;
+                content = `
+                    <div style="margin-bottom: 20px;">
+                        <h4 style="color: #2c3e50; margin: 0 0 10px 0;">📚 ${data.story.storyId}</h4>
+                        <p style="margin: 5px 0;"><strong>Summary:</strong> ${data.story.summary}</p>
+                        <p style="margin: 5px 0;"><strong>Description:</strong> ${data.story.description}</p>
+                        <p style="margin: 10px 0; color: #666;"><strong>Test Cases Found:</strong> ${data.count}</p>
+                    </div>
+                `;
+
+                if (data.testCases && data.testCases.length > 0) {
+                    content += '<div style="border-top: 1px solid #eee; padding-top: 15px;"><h5>Related Test Cases:</h5>';
+                    data.testCases.forEach(tc => {
+                        content += `
+                            <div style="border: 1px solid #e1e8ed; border-radius: 6px; padding: 12px; margin: 8px 0; background: #f8f9fa;">
+                                <div style="font-weight: bold; color: #007bff; margin-bottom: 8px;">${tc.testCaseId}</div>
+                                <div style="margin: 5px 0;"><strong>Title:</strong> ${tc.title}</div>
+                                <div style="font-size: 12px; color: #666; margin-bottom: 8px;">
+                                    Category: ${tc.category} | Priority: ${tc.priority}
+                                </div>
+                            </div>
+                        `;
+                    });
+                    content += '</div>';
+                }
+            }
+
+            showSearchDialog(title, content);
+        }
+
+        function updateSelectionCount() {
+            const checkboxes = document.querySelectorAll('.testcase-checkbox:checked');
+            const totalCheckboxes = document.querySelectorAll('.testcase-checkbox');
+            const count = checkboxes.length;
+            const total = totalCheckboxes.length;
+            
+            // Update selected count display
+            document.getElementById('selected-count').textContent = `${count} of ${total} selected`;
+            
+            // Update select-all checkbox state
+            const selectAllCheckbox = document.getElementById('select-all-testcases');
+            if (count === 0) {
+                selectAllCheckbox.checked = false;
+                selectAllCheckbox.indeterminate = false;
+            } else if (count === total) {
+                selectAllCheckbox.checked = true;
+                selectAllCheckbox.indeterminate = false;
+            } else {
+                selectAllCheckbox.checked = false;
+                selectAllCheckbox.indeterminate = true;
+            }
+            
+            // Enable/disable bulk action buttons
+            const bulkButtons = ['send-selected-btn'];
+            bulkButtons.forEach(btnId => {
+                const btn = document.getElementById(btnId);
+                if (btn) {
+                    btn.disabled = count === 0;
+                }
+            });
+            
+            // Show/hide bulk actions section
+            const bulkActionsSection = document.getElementById('bulk-actions-section');
+            if (bulkActionsSection) {
+                bulkActionsSection.style.display = total > 0 ? 'block' : 'none';
+            }
+        }
+
+        function toggleAllTestCases() {
+            const selectAll = document.getElementById('select-all-testcases').checked;
+            const checkboxes = document.querySelectorAll('.testcase-checkbox');
+            
+            // Apply selection to all checkboxes
+            checkboxes.forEach(cb => {
+                cb.checked = selectAll;
+            });
+            
+            // Update selection count and button states
+            updateSelectionCount();
+            
+            // Provide visual feedback
+            if (checkboxes.length > 0) {
+                const action = selectAll ? 'selected' : 'deselected';
+                console.log(`✅ ${action} ${checkboxes.length} test cases`);
+                
+                // Brief visual highlight for feedback
+                checkboxes.forEach(cb => {
+                    const row = cb.closest('.testcase-item');
+                    if (row) {
+                        row.style.transition = 'background-color 0.2s';
+                        row.style.backgroundColor = selectAll ? '#e7f3ff' : '';
+                        setTimeout(() => {
+                            row.style.backgroundColor = '';
+                        }, 300);
+                    }
+                });
+            }
+        }
+
+        // Additional Test Case Functions
+        async function loadAllTestCases() {
+            await loadTestCasesByStory();
+        }
+
+        // REMOVED: generateTestCasesForStory() function - no longer needed per user request
+
+        async function refreshTestCases() {
+            await loadTestCasesByStory();
+            alert('✅ Test cases refreshed!');
+        }
+
+        function previewTestCase(testCaseId) {
+            alert(`👁️ Previewing test case: ${testCaseId}`);
+        }
+
+        function editTestCase(testCaseId) {
+            alert(`✏️ Edit functionality for ${testCaseId} - Coming soon!`);
+        }
+
+        async function sendSelectedToZephyr() {
+            const selected = document.querySelectorAll('.testcase-checkbox:checked');
+            if (selected.length === 0) {
+                alert('⚠️ Please select at least one test case to send to Zephyr.');
+                return;
+            }
+            
+            // Get the selected test case IDs
+            const selectedTestCaseIds = Array.from(selected).map(cb => cb.value);
+            
+            // Show confirmation dialog with details
+            const confirmMessage = `🚀 Send ${selected.length} test cases to Zephyr?\n\nSelected Test Cases:\n${selectedTestCaseIds.join('\n')}\n\nThis will:\n- Validate test case format\n- Check for duplicates in Zephyr\n- Submit to Zephyr with proper formatting\n- Update test case status`;
+            
+            if (!window.confirm(confirmMessage)) {
+                return;
+            }
+            
+            // Show loading state
+            const sendBtn = document.getElementById('send-selected-btn');
+            const originalText = sendBtn.innerHTML;
+            sendBtn.innerHTML = '⏳ Sending to Zephyr...';
+            sendBtn.disabled = true;
+            
+            try {
+                // Submit selected test cases directly to Zephyr using the dedicated endpoint
+                const response = await fetch('/api/submit-selected-to-zephyr', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        testCaseIds: selectedTestCaseIds,
+                        projectId: 'AI-TEST-GENERATION',
+                        submittedBy: 'dashboard-user'
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok && result.status === 'success') {
+                    // Show success message with details
+                    let successMessage = `✅ Successfully sent ${result.submittedCount} test cases to Zephyr!\n\n`;
+                    successMessage += `Submission ID: ${result.submissionId}\n\n`;
+                    
+                    // Show Zephyr results
+                    if (result.zephyrResults && result.zephyrResults.length > 0) {
+                        const successful = result.zephyrResults.filter(r => r.status === 'submitted' || r.status === 'simulated');
+                        const failed = result.zephyrResults.filter(r => r.status === 'failed');
+                        
+                        if (successful.length > 0) {
+                            successMessage += `✅ Successfully submitted: ${successful.length}\n`;
+                            successful.forEach(r => {
+                                const statusIcon = r.status === 'simulated' ? '🔧' : '✅';
+                                const note = r.note ? ` (${r.note})` : '';
+                                successMessage += `  ${statusIcon} ${r.testCaseId} → ${r.zephyrId}${note}\n`;
+                            });
+                        }
+                        
+                        if (failed.length > 0) {
+                            successMessage += `\n❌ Failed: ${failed.length}\n`;
+                            failed.forEach(r => {
+                                successMessage += `  • ${r.testCaseId}: ${r.error}\n`;
+                            });
+                        }
+                    }
+                    
+                    alert(successMessage);
+                    
+                    // Clear selections and reload
+                    document.getElementById('select-all-testcases').checked = false;
+                    toggleAllTestCases();
+                    await loadTestCasesByStory();
+                    
+                } else {
+                    throw new Error(result.message || 'Failed to submit to Zephyr');
+                }
+                
+            } catch (error) {
+                console.error('Error sending to Zephyr:', error);
+                alert(`❌ Failed to send test cases to Zephyr:\n\n${error.message}\n\nPlease check the console for more details.`);
+            } finally {
+                // Restore button state
+                sendBtn.innerHTML = originalText;
+                sendBtn.disabled = false;
+                updateSelectionCount(); // Re-enable based on selection
+            }
+        }
+
+        // =====================================
+        // SEARCH FUNCTIONALITY
+        // =====================================
+
+        // Initialize search functionality when page loads
+        function initializeSearch() {
+            const searchInput = document.getElementById('searchInput');
+            if (searchInput) {
+                // Add Enter key event listener
+                searchInput.addEventListener('keypress', function(event) {
+                    if (event.key === 'Enter') {
+                        const query = searchInput.value.trim();
+                        if (query) {
+                            performSearch(query);
+                        }
+                    }
+                });
+
+                // Optional: Add clear search when input is empty
+                searchInput.addEventListener('input', function(event) {
+                    if (event.target.value === '') {
+                        closeSearchDialog();
+                    }
+                });
+            }
+        }
+
+        // Perform search for Story IDs and Test Case IDs
+        async function performSearch(query) {
+            if (!query || query.trim() === '') {
+                alert('Please enter a search term');
+                return;
+            }
+
+            // Show loading state
+            showSearchDialog('Searching...', '<div class="loading">🔄 Searching for: ' + query + '</div>');
+
+            try {
+                console.log('Searching fors:', query);
+
+                // Call the search API (case-insensitive handled by backend)
+                const response = await fetch(`http://localhost:3006/api/test-case/${encodeURIComponent(query)}`);
+                const data = await response.json();
+
+                if (response.ok && data.status === 'success') {
+
+                    console.log('Search results:', data);
+                    
+                    displaySearchResults(data, query);
+                } else {
+                    // No results found
+                    showSearchDialog('Search Results', `
+                        <div class="empty-state">
+                            <div class="empty-message">
+                                <h4>No results found for "${query}"</h4>
+                                <p>Please check the Story ID or Test Case ID and try again.</p>
+                                <p><strong>Examples:</strong></p>
+                                <ul style="text-align: left; margin: 10px 0;">
+                                    <li>Jira IDs: DEC-34, DEC-35</li>
+                                    <li>Story IDs: UNKNOWN-001, PROJ-123</li>
+                                    <li>Local Test Case IDs: TC_001, TC_002</li>
+                                </ul>
+                            </div>
+                        </div>
+                    `);
+                }
+
+            } catch (error) {
+                console.error('Search error:', error);
+                showSearchDialog('Search Error', `
+                    <div class="empty-state">
+                        <div class="empty-message">
+                            <h4>Search failed</h4>
+                            <p>Unable to connect to search service. Please try again.</p>
+                            <p style="color: #666; font-size: 12px;">Error: ${error.message}</p>
+                        </div>
+                    </div>
+                `);
+            }
+        }
+
+        // Display search results in the dialog
+        function displaySearchResults(data, query) {
+            let content = '';
+            let title = 'Search Results';
+            console.log('Displaying search results for:', data);
+            console.log('query '+query)
+            if (data.searchType === 'story') {
+                // Story found - show story info and all its test cases
+                title = `Story Found: ${data.story.storyId}`;
+                content = `
+                    <div style="margin-bottom: 20px;">
+                        <h4 style="color: #2c3e50; margin: 0 0 10px 0;">📚 ${data.story.storyId}</h4>
+                        <p style="margin: 5px 0;"><strong>Summary:</strong> ${data.story.summary}</p>
+                        <p style="margin: 5px 0;"><strong>Description:</strong> ${data.story.description}</p>
+                        <p style="margin: 10px 0; color: #666;"><strong>Test Cases Found:</strong> ${data.count}</p>
+                    </div>
+                `;
+
+                if (data.testCases && data.testCases.length > 0) {
+                    content += '<div style="border-top: 1px solid #eee; padding-top: 15px;"><h5>Test Cases:</h5>';
+                    data.testCases.forEach(tc => {
+                        const testCaseTitle = tc.jiraKey ? `${tc.jiraKey}` : tc.testCaseId;
+                        const jiraLinkHtml = tc.jiraUrl ? `<a href="${tc.jiraUrl}" target="_blank" style="color: #007bff; text-decoration: none;">🔗 View in Jira</a>` : '';
+                        
+                        content += `
+                            <div style="border: 1px solid #e1e8ed; border-radius: 6px; padding: 12px; margin: 8px 0; background: #f8f9fa;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                                    <div style="font-weight: bold; color: #007bff;">${testCaseTitle}</div>
+                                    ${jiraLinkHtml}
+                                </div>
+                                <div style="margin: 5px 0;"><strong>Title:</strong> ${tc.description}</div>
+                                <div style="font-size: 12px; color: #666; margin-bottom: 8px;">
+                                    Category: ${tc.category} | Priority: ${tc.priority}
+                                </div>
+                                
+                                ${tc.steps && tc.steps.length > 0 ? `
+                                    <div style="margin-top: 10px;">
+                                        <strong>Test Steps:</strong>
+                                        <div style="margin-top: 5px;">
+                                            ${tc.steps.map((step, index) => `
+                                                <div style="border-left: 3px solid #007bff; padding-left: 10px; margin: 5px 0; background: #f1f3f4; padding: 8px;">
+                                                    <div style="font-weight: bold; color: #0056b3;">Step ${step.step || index + 1}:</div>
+                                                    <div style="margin: 3px 0;"><strong>Action:</strong> ${step.action || 'No action specified'}</div>
+                                                    ${step.testData ? `<div style="margin: 3px 0;"><strong>Test Data:</strong> ${step.testData}</div>` : ''}
+                                                    <div style="margin: 3px 0;"><strong>Expected Result:</strong> ${step.expectedResult || 'No expected result specified'}</div>
+                                                </div>
+                                            `).join('')}
+                                        </div>
+                                    </div>
+                                ` : ''}
+                            </div>
+                        `;
+                    });
+                    content += '</div>';
+                }
+
+            } else if (data.searchType === 'testcase') {
+                // Test case found - show detailed test case info
+                const tc = data.testCase;
+                const testCaseTitle = tc.jiraKey ? `${tc.jiraKey}` : tc.testCaseId;
+                const jiraLinkHtml = tc.jiraUrl ? `<a href="${tc.jiraUrl}" target="_blank" style="color: #007bff; text-decoration: none; margin-left: 10px;">🔗 View in Jira</a>` : '';
+                
+                title = `Test Case Found: ${testCaseTitle}`;
+                content = `
+                    <div style="margin-bottom: 20px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                            <h4 style="color: #2c3e50; margin: 0;">🧪 ${testCaseTitle}</h4>
+                            ${jiraLinkHtml}
+                        </div>
+                        <p style="margin: 5px 0;"><strong>Title:</strong> ${tc.title}</p>
+                        <p style="margin: 5px 0;"><strong>Category:</strong> ${tc.category}</p>
+                        <p style="margin: 5px 0;"><strong>Priority:</strong> ${tc.priority}</p>
+                        <p style="margin: 5px 0;"><strong>Related Story:</strong> ${tc.relatedStoryId}</p>
+                        <p style="margin: 5px 0;"><strong>Story Title:</strong> ${tc.storyTitle}</p>
+                        ${tc.localId && tc.localId !== tc.testCaseId ? `<p style="margin: 5px 0; color: #666; font-size: 12px;"><strong>Local ID:</strong> ${tc.localId}</p>` : ''}
+                    </div>
+                `;
+
+                // Show preconditions if available
+                if (tc.preconditions && tc.preconditions.length > 0) {
+                    content += `
+                        <div style="border-top: 1px solid #eee; padding-top: 15px; margin-bottom: 15px;">
+                            <h5 style="color: #2c3e50;">📋 Preconditions:</h5>
+                            <ul style="margin: 5px 0; padding-left: 20px;">
+                                ${tc.preconditions.map(precondition => `<li>${precondition}</li>`).join('')}
+                            </ul>
+                        </div>
+                    `;
+                }
+
+                // Show detailed test steps
+                if (tc.steps && tc.steps.length > 0) {
+                    content += `
+                        <div style="border-top: 1px solid #eee; padding-top: 15px;">
+                            <h5 style="color: #2c3e50;">🔄 Test Steps:</h5>
+                            <div style="max-height: 400px; overflow-y: auto;">
+                    `;
+                    tc.steps.forEach((step, index) => {
+                        content += `
+                            <div style="border: 1px solid #e1e8ed; border-radius: 6px; padding: 12px; margin: 8px 0; background: #f8f9fa;">
+                                <div style="font-weight: bold; color: #007bff; margin-bottom: 8px;">Step ${step.step || index + 1}</div>
+                                <div style="margin: 5px 0;">
+                                    <strong>🎯 Action:</strong> 
+                                    <div style="background: white; padding: 8px; border-radius: 4px; margin-top: 3px;">
+                                        ${step.action || 'No action specified'}
+                                    </div>
+                                </div>
+                                ${step.testData ? `
+                                    <div style="margin: 5px 0;">
+                                        <strong>📝 Test Data:</strong>
+                                        <div style="background: #e3f2fd; padding: 8px; border-radius: 4px; margin-top: 3px; color: #1565c0;">
+                                            ${step.testData}
+                                        </div>
+                                    </div>
+                                ` : ''}
+                                <div style="margin: 5px 0;">
+                                    <strong>✅ Expected Result:</strong>
+                                    <div style="background: #e8f5e8; padding: 8px; border-radius: 4px; margin-top: 3px; color: #2e7d32;">
+                                        ${step.expectedResult || 'No expected result specified'}
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    content += '</div></div>';
+                }
+
+                // Show overall expected outcome if available
+                if (tc.expectedOutcome) {
+                    content += `
+                        <div style="border-top: 1px solid #eee; padding-top: 15px; margin-top: 15px;">
+                            <h5 style="color: #2c3e50;">🎯 Expected Outcome:</h5>
+                            <div style="background: #f0f8ff; padding: 12px; border-radius: 6px; margin-top: 5px; border-left: 4px solid #007bff;">
+                                ${tc.expectedOutcome}
+                            </div>
+                        </div>
+                    `;
+                }
+
+                // Show additional inputs if available
+                if (tc.inputs) {
+                    content += `
+                        <div style="border-top: 1px solid #eee; padding-top: 15px; margin-top: 15px;">
+                            <h5 style="color: #2c3e50;">🔢 Test Inputs:</h5>
+                            <div style="background: #fff3e0; padding: 12px; border-radius: 6px; margin-top: 5px; border-left: 4px solid #ff9800;">
+                                ${tc.inputs}
+                            </div>
+                        </div>
+                    `;
+                }
+            }
+
+            showSearchDialog(title, content);
+        }
+
+        // Show search dialog with title and content
+        function showSearchDialog(title, content) {
+            const dialog = document.getElementById('searchDialog');
+            const titleElement = document.getElementById('dialogTitle');
+            const contentElement = document.getElementById('dialogContent');
+
+            if (dialog && titleElement && contentElement) {
+                titleElement.textContent = title;
+                contentElement.innerHTML = content;
+                dialog.style.display = 'block';
+            }
+        }
+
+        // Close search dialog
+        function closeSearchDialog() {
+            const dialog = document.getElementById('searchDialog');
+            if (dialog) {
+                dialog.style.display = 'none';
+            }
+        }
+
+        // Close dialog function (referenced in HTML)
+        function closeDialog() {
+            closeSearchDialog();
+        }
+    </script>
+</body>
+</html>

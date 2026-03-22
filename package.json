@@ -1,0 +1,41 @@
+{
+  "name": "hackaton-webhook-api",
+  "version": "2.0.0-modular",
+  "description": "Modular AI-Powered Test Case Generation System with Webhook Integration",
+  "main": "server.js",
+  "scripts": {
+    "start": "concurrently --prefix-colors \"cyan,magenta,yellow\" --prefix \"[{name}]\" --names \"API,WEBHOOK,DASHBOARD\" \"node src/servers/server.js\" \"node src/services/webhookReceiver.js\" \"node dashboard/server.js\"",
+    "stop": "taskkill /F /IM node.exe 2>nul || echo No Node processes running",
+    "status": "netstat -ano | findstr \":3000 :3001 :3006\" || echo No servers running on ports 3000, 3001, 3006",
+    "dev": "nodemon src/servers/server.js",
+    "webhook": "node src/services/webhookReceiver.js",
+    "dashboard": "node dashboard/server.js",
+    "test:postman": "echo Use Postman collections in /tests/postman/ && echo Webhook: POST http://localhost:3001/webhook && echo API: POST http://localhost:3000/auto-testcase"
+  },
+  "dependencies": {
+    "@azure/search-documents": "^12.1.0",
+    "axios": "^1.5.0",
+    "body-parser": "^1.20.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1",
+    "nodemon": "^3.0.1"
+  },
+  "keywords": [
+    "webhook",
+    "azure",
+    "openai",
+    "local-database",
+    "vector-database",
+    "test-automation",
+    "modular-architecture",
+    "ai-powered",
+    "jira-integration",
+    "zephyr-integration"
+  ],
+  "author": "",
+  "license": "ISC"
+}
