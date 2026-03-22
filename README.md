@@ -1,6 +1,15 @@
-# 🤖 AI Test Case Generation Platform
+![Node.js](https://img.shields.io/badge/Node.js-Backend-green)
+![AI](https://img.shields.io/badge/AI-GPT--4-blue)
+![Jira](https://img.shields.io/badge/Jira-Integration-orange)# 🤖 AI Test Case Generator Agent
 
-An intelligent platform that automatically generates comprehensive test cases from Jira stories using AI, with advanced duplicate detection and real-time Jira integration.
+🚀 AI-powered platform that automatically generates test cases from Jira user stories using GPT-4, with vector-based duplicate detection and real-time Jira integration.
+
+## 🔥 Highlights
+- 🤖 GPT-4 powered intelligent test case generation  
+- 🔍 Vector-based duplicate detection (cosine similarity)  
+- 🔗 Real-time Jira integration via webhooks  
+- 📊 Monitoring dashboard with live analytics  
+- ⚡ Microservices-based scalable architecture  
 
 ## 🎯 Overview
 
@@ -81,6 +90,15 @@ This platform revolutionizes test case creation by:
                     │ • Embedding Service │
                     └─────────────────────┘
 ```
+## 🧠 How It Works
+
+1. Jira story is created/updated  
+2. Webhook triggers the system  
+3. AI (GPT-4) analyzes story and generates test cases  
+4. Vector embeddings are created for each test case  
+5. Duplicate detection engine compares with existing cases  
+6. Final test cases are pushed to Jira  
+7. Dashboard updates in real-time  
 
 ## 🚀 Quick Start
 
